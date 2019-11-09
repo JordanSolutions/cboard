@@ -385,6 +385,11 @@ class API {
 
     return data;
   }
+
+  async saveAnalytics(analytics) {
+    const { data } = await this.axiosInstance.post(`/analytics`, analytics);
+    return data;
+  }
 }
 
 const API_INSTANCE = new API({});

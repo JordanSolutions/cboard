@@ -44,6 +44,16 @@ export class ExportContainer extends PureComponent {
     return boards;
   }
 
+  handleUploadClick = async doneCallback => {
+    try {
+      doneCallback();
+    } catch (e) {
+      alert(e.toString());
+      doneCallback();
+      throw e;
+    }
+  };
+
   render() {
     const { boards, history } = this.props;
 
@@ -51,6 +61,7 @@ export class ExportContainer extends PureComponent {
       <Export
         boards={boards}
         onExportClick={this.handleExportClick}
+        onUploadClick={this.handleUploadClick}
         onClose={history.goBack}
       />
     );

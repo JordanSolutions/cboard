@@ -10,6 +10,8 @@ import CircularProgress from '@material-ui/core/CircularProgress';
 import ListItem from '@material-ui/core/ListItem';
 import ListItemText from '@material-ui/core/ListItemText';
 import ListItemSecondaryAction from '@material-ui/core/ListItemSecondaryAction';
+
+import { isCordova } from '../../../cordova-util';
 import FullScreenDialog from '../../UI/FullScreenDialog';
 import messages from './Export.messages';
 
@@ -32,7 +34,8 @@ class Export extends React.Component {
 
     this.state = {
       exportMenu: null,
-      loading: false
+      loading: false,
+      savingAnalytics: false
     };
   }
 
@@ -53,6 +56,13 @@ class Export extends React.Component {
       this.props.onExportClick(type, doneCallback);
     });
   }
+
+  onUploadClick = () => {
+    this.setState({ savingAnalytics: true });
+    this.props.onUploadClick(() => {
+      this.setState({ savingAnalytics: false });
+    });
+  };
 
   render() {
     const { onClose } = this.props;
@@ -125,6 +135,35 @@ class Export extends React.Component {
                   </div>
                 </ListItemSecondaryAction>
               </ListItem>
+              {isCordova() && (
+                <ListItem>
+                  <ListItemText
+                    primary={<FormattedMessage {...messages.uploadAnalytics} />}
+                    secondary={
+                      <FormattedMessage
+                        {...messages.uploadAnalyticsSecondary}
+                      />
+                    }
+                  />
+                  <ListItemSecondaryAction>
+                    <div className="Export__ButtonContainer">
+                      {this.state.savingAnalytics && (
+                        <CircularProgress
+                          size={25}
+                          className="Export__ButtonContainer--spinner"
+                          thickness={7}
+                        />
+                      )}
+                      <Button
+                        disabled={this.state.savingAnalytics}
+                        onClick={this.onUploadClick}
+                      >
+                        <FormattedMessage {...messages.upload} />
+                      </Button>
+                    </div>
+                  </ListItemSecondaryAction>
+                </ListItem>
+              )}
             </List>
           </Paper>
         </FullScreenDialog>
